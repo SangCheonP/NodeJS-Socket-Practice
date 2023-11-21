@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title>HTML 5 Boilerplate</title>
+    <link rel="stylesheet" href="/stylesheets/style.css" />
+    <!-- CSS only -->
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+      integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN"
+      crossorigin="anonymous"
+    />
+    <script src="/socket.io/socket.io.js"></script>
+    <script>
+      const socket = io();
+
+      // 클라이언트가 서버로 보냄
+      socket.on("connect", () => {
+        socket.emit("event1", "hllo kw!");
+      });
+
+      socket.on("getID", (data) => {
+        document
+          .getElementById("myid")
+          .appendChild(
+            document
+              .createElement("p")
+              .appendChild(document.createTextNode(`MY ID: ${data}`))
+          );
+      });
+
+      // 클라이언트가 서버로부터 받음
+      socket.on("msg", (data) => {
+        let log = document.getElementById("msg");
+        let ptag = document.createElement("p");
+        let node = document.createTextNode(
+          `${data.id} 에서 보낸 메시지 : ${data.message}`
+        );
+        ptag.appendChild(node);
+        log.appendChild(ptag);
+        //console.log(data.id, data.message);
+      });
+
+      const input = () => {
+        let data = document.getElementById("input_msg").value;
+        socket.emit("input", data);
+      };
+
+      const inputWM = () => {
+        let data = document.getElementById("input_msg").value;
+        socket.emit("inputWM", data);
+      };
+
+      const privatemsg = () => {
+        let data = document.getElementById("input_msg").value;
+        let id = document.getElementById("input_id").value;
+        socket.emit("private", id, data);
+      };
+    </script>
+  </head>
+  <body>
+    <!-- 반응형 -->
+    <div class="container-fluid">
+      <div class="row">
+        <div class="col-3"></div>
+        <div class="col-6">
+          <div id="myid"></div>
+          <div id="msg"></div>
+          <form action="#">
+            <input
+              type="text"
+              class="form-control mb-3"
+              id="input_msg"
+              placeholder="보낼메시지"
+              autocomplete="off"
+            />
+            <input
+              type="text"
+              class="form-control mb-3"
+              id="input_id"
+              placeholder="수신자 ID"
+              autocomplete="off"
+            />
+          </form>
+          <button class="btn btn-primary mb-3" onclick="input()">
+            모두에게
+          </button>
+          <button class="btn btn-primary mb-3" onclick="inputWM()">
+            나빼고
+          </button>
+          <button class="btn btn-primary mb-3" onclick="privatemsg()">
+            특정사용자에게
+          </button>
+        </div>
+        <div class="col-3"></div>
+      </div>
+    </div>
+    <script src="/javascripts/index.js"></script>
+  </body>
+</html>
