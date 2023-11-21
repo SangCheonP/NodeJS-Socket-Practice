@@ -16,7 +16,6 @@
     <script src="/socket.io/socket.io.js"></script>
     <script>
       const socket = io();
-
       // 클라이언트가 서버로 보냄
       socket.on("connect", () => {
         socket.emit("event1", "hllo kw!");
